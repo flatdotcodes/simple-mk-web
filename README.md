@@ -10,6 +10,16 @@ This was made as a simple solution to a simple problem I personally had. Entirel
 
 Feel free to report a bug, suggest a change, or submit a pull request. All are welcome.
 
+## Screenshots
+
+| Preview | Split View |
+|---------|------------|
+| ![Preview](screenshots/preview.png) | ![Split](screenshots/split.png) |
+
+| Editor | Dark Mode |
+|--------|-----------|
+| ![Editor](screenshots/editor.png) | ![Dark Mode](screenshots/dark-mode.png) |
+
 ## Features
 
 - **Folder browsing** — pick any local directory using the File System Access API
