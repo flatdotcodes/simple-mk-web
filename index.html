@@ -162,12 +162,12 @@ body {
   transition: all var(--md-dur-short) var(--md-ease);
 }
 .switch .thumb {
-  position: absolute; width: 16px; height: 16px; left: 6px; top: 50%; transform: translateY(-50%);
+  position: absolute; width: 16px; height: 16px; left: 8px; top: 50%; transform: translateY(-50%);
   background: var(--md-outline); border-radius: 50%;
   transition: all var(--md-dur-short) var(--md-ease);
 }
 .switch input:checked ~ .track { background: var(--md-primary); border-color: var(--md-primary); }
-.switch input:checked ~ .thumb { left: 28px; width: 24px; height: 24px; background: var(--md-on-primary); }
+.switch input:checked ~ .thumb { left: 24px; width: 24px; height: 24px; background: var(--md-on-primary); }
 
 .toggle-row { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--md-on-surface-variant); cursor: pointer; user-select: none; }
 
@@ -190,6 +190,16 @@ body {
 #landing h1 { font-size: 32px; font-weight: 600; letter-spacing: -0.5px; }
 #landing p { color: var(--md-on-surface-variant); font-size: 15px; max-width: 380px; line-height: 1.5; }
 #landing .privacy { font-size: 12px; color: var(--md-outline); margin-top: 4px; }
+
+.gh-link {
+  display: inline-flex; align-items: center; gap: 8px; margin-top: 8px;
+  font-size: 13px; color: var(--md-on-surface-variant); text-decoration: none;
+  padding: 8px 16px; border-radius: 20px; border: 1px solid var(--md-outline-variant);
+  transition: all var(--md-dur-short) var(--md-ease);
+}
+.gh-link:hover { background: var(--md-elevation-2); border-color: var(--md-outline); }
+.gh-link svg { width: 18px; height: 18px; fill: currentColor; flex-shrink: 0; }
+.gh-link .gh-star { display: inline-flex; align-items: center; gap: 4px; margin-left: 4px; padding-left: 8px; border-left: 1px solid var(--md-outline-variant); }
 
 .btn-tonal {
   display: inline-flex; align-items: center; gap: 8px;
@@ -254,8 +264,8 @@ body {
 .sidebar-row .toggle-row { margin-left: auto; font-size: 12px; gap: 6px; }
 .sidebar-row .switch { width: 44px; height: 28px; }
 .sidebar-row .switch .track { border-width: 1.5px; }
-.sidebar-row .switch .thumb { width: 14px; height: 14px; left: 5px; }
-.sidebar-row .switch input:checked ~ .thumb { left: 22px; width: 20px; height: 20px; }
+.sidebar-row .switch .thumb { width: 14px; height: 14px; left: 7px; }
+.sidebar-row .switch input:checked ~ .thumb { left: 20px; width: 20px; height: 20px; }
 
 .search-field {
   display: flex; align-items: center; gap: 8px;
@@ -654,6 +664,11 @@ body {
     <span class="material-symbols-rounded">folder_open</span> Open Folder
   </button>
   <div class="privacy">Your files stay on your device. Nothing is uploaded.</div>
+  <a class="gh-link" href="https://github.com/flatdotcodes/simple-mk-web" target="_blank" rel="noopener">
+    <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+    GitHub
+    <span class="gh-star"><svg viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25z"/></svg>Star</span>
+  </a>
 </div>
 
 <!-- APP -->
