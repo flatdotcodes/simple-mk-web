@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="favicon.svg" width="72" height="72" alt="simple-mk-web">
+</p>
+
 # simple-mk-web
 
 A single-file markdown viewer and editor that runs entirely in your browser. Select a local folder, browse your `.md` files, and preview or edit them — nothing is uploaded anywhere.
