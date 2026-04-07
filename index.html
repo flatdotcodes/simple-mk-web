@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>simple-mk-web</title>
+
+<!-- CDN: Fonts & Icons -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,300..800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
+
+<!-- CDN: Markdown & Syntax Highlighting -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github.min.css" id="hljs-light">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css" id="hljs-dark" disabled>
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   M3 DESIGN TOKENS
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  --md-primary: #6750A4;
+  --md-on-primary: #FFFFFF;
+  --md-primary-container: #EADDFF;
+  --md-on-primary-container: #21005D;
+  --md-secondary: #625B71;
+  --md-on-secondary: #FFFFFF;
+  --md-secondary-container: #E8DEF8;
+  --md-on-secondary-container: #1D192B;
+  --md-tertiary: #7D5260;
+  --md-tertiary-container: #FFD8E4;
+  --md-on-tertiary-container: #31111D;
+  --md-error: #B3261E;
+  --md-on-error: #FFFFFF;
+  --md-error-container: #F9DEDC;
+  --md-surface: #FFFBFE;
+  --md-surface-dim: #DED8E1;
+  --md-surface-container-lowest: #FFFFFF;
+  --md-surface-container-low: #F7F2FA;
+  --md-surface-container: #F3EDF7;
+  --md-surface-container-high: #ECE6F0;
+  --md-surface-container-highest: #E6E0E9;
+  --md-on-surface: #1C1B1F;
+  --md-on-surface-variant: #49454F;
+  --md-outline: #79747E;
+  --md-outline-variant: #CAC4D0;
+  --md-inverse-surface: #313033;
+  --md-inverse-on-surface: #F4EFF4;
+  --md-scrim: rgba(0,0,0,0.32);
+  --md-elevation-1: rgba(103,80,164,0.05);
+  --md-elevation-2: rgba(103,80,164,0.08);
+  --md-elevation-3: rgba(103,80,164,0.11);
+  --md-ease: cubic-bezier(0.2, 0, 0, 1);
+  --md-dur-short: 200ms;
+  --md-dur-med: 300ms;
+  --sidebar-w: 300px;
+  --topbar-h: 64px;
+}
+
+[data-theme="dark"] {
+  --md-primary: #D0BCFF;
+  --md-on-primary: #381E72;
+  --md-primary-container: #4F378B;
+  --md-on-primary-container: #EADDFF;
+  --md-secondary: #CCC2DC;
+  --md-on-secondary: #332D41;
+  --md-secondary-container: #4A4458;
+  --md-on-secondary-container: #E8DEF8;
+  --md-tertiary: #EFB8C8;
+  --md-tertiary-container: #633B48;
+  --md-on-tertiary-container: #FFD8E4;
+  --md-error: #F2B8B5;
+  --md-on-error: #601410;
+  --md-error-container: #8C1D18;
+  --md-surface: #141218;
+  --md-surface-dim: #141218;
+  --md-surface-container-lowest: #0F0D13;
+  --md-surface-container-low: #1D1B20;
+  --md-surface-container: #211F26;
+  --md-surface-container-high: #2B2930;
+  --md-surface-container-highest: #36343B;
+  --md-on-surface: #E6E0E9;
+  --md-on-surface-variant: #CAC4D0;
+  --md-outline: #938F99;
+  --md-outline-variant: #49454F;
+  --md-inverse-surface: #E6E0E9;
+  --md-inverse-on-surface: #313033;
+  --md-scrim: rgba(0,0,0,0.5);
+  --md-elevation-1: rgba(208,188,255,0.05);
+  --md-elevation-2: rgba(208,188,255,0.08);
+  --md-elevation-3: rgba(208,188,255,0.11);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESET & BASE
+   ═══════════════════════════════════════════════════════════════ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Roboto Flex', system-ui, sans-serif;
+  background: var(--md-surface);
+  color: var(--md-on-surface);
+  height: 100dvh;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  transition: background var(--md-dur-med) var(--md-ease), color var(--md-dur-med) var(--md-ease);
+}
+
+.material-symbols-rounded {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  user-select: none; vertical-align: middle; line-height: 1;
+}
+
+@keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.92) } to { opacity: 1; transform: scale(1) } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ICON BUTTON (universal)
+   ═══════════════════════════════════════════════════════════════ */
+.icon-btn {
+  width: 40px; height: 40px; border-radius: 20px; border: none; background: none;
+  color: var(--md-on-surface-variant); cursor: pointer;
+  display: inline-grid; place-items: center; flex-shrink: 0;
+  transition: background var(--md-dur-short) var(--md-ease);
+}
+.icon-btn:hover { background: var(--md-elevation-2); }
+.icon-btn:active { background: var(--md-elevation-3); }
+.icon-btn .material-symbols-rounded { font-size: 24px; }
+
+/* M3 BUTTONS */
+.m3-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 40px; padding: 0 24px; border-radius: 20px;
+  font: 500 14px/20px 'Roboto Flex', sans-serif; cursor: pointer;
+  border: none; transition: all var(--md-dur-short) var(--md-ease);
+  white-space: nowrap;
+}
+.m3-btn:active { transform: scale(0.97); }
+.m3-btn-text { background: none; color: var(--md-primary); }
+.m3-btn-text:hover { background: var(--md-elevation-2); }
+.m3-btn-text.danger { color: var(--md-error); }
+.m3-btn-filled { background: var(--md-primary); color: var(--md-on-primary); }
+.m3-btn-filled:hover { box-shadow: 0 1px 3px 1px rgba(0,0,0,0.15); }
+.m3-btn-filled.error { background: var(--md-error); color: var(--md-on-error); }
+.m3-btn-tonal { background: var(--md-secondary-container); color: var(--md-on-secondary-container); }
+.m3-btn-tonal:hover { box-shadow: 0 1px 3px 1px rgba(0,0,0,0.15); }
+
+/* M3 SWITCH */
+.switch { position: relative; width: 52px; height: 32px; flex-shrink: 0; cursor: pointer; }
+.switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+.switch .track {
+  position: absolute; inset: 0; border-radius: 16px;
+  background: var(--md-surface-container-highest); border: 2px solid var(--md-outline);
+  transition: all var(--md-dur-short) var(--md-ease);
+}
+.switch .thumb {
+  position: absolute; width: 16px; height: 16px; left: 6px; top: 50%; transform: translateY(-50%);
+  background: var(--md-outline); border-radius: 50%;
+  transition: all var(--md-dur-short) var(--md-ease);
+}
+.switch input:checked ~ .track { background: var(--md-primary); border-color: var(--md-primary); }
+.switch input:checked ~ .thumb { left: 28px; width: 24px; height: 24px; background: var(--md-on-primary); }
+
+.toggle-row { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--md-on-surface-variant); cursor: pointer; user-select: none; }
+
+/* ═══════════════════════════════════════════════════════════════
+   LANDING
+   ═══════════════════════════════════════════════════════════════ */
+#landing {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 100dvh; gap: 16px; padding: 32px; text-align: center;
+  animation: fadeIn var(--md-dur-med) var(--md-ease);
+}
+
+.hero-icon {
+  width: 96px; height: 96px; border-radius: 28px;
+  background: var(--md-primary-container); color: var(--md-on-primary-container);
+  display: grid; place-items: center; margin-bottom: 8px;
+}
+.hero-icon .material-symbols-rounded { font-size: 48px; }
+
+#landing h1 { font-size: 32px; font-weight: 600; letter-spacing: -0.5px; }
+#landing p { color: var(--md-on-surface-variant); font-size: 15px; max-width: 380px; line-height: 1.5; }
+#landing .privacy { font-size: 12px; color: var(--md-outline); margin-top: 4px; }
+
+.btn-tonal {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--md-secondary-container); color: var(--md-on-secondary-container);
+  border: none; border-radius: 20px; padding: 12px 28px 12px 20px;
+  font: 500 15px/20px 'Roboto Flex', sans-serif; cursor: pointer;
+  transition: all var(--md-dur-short) var(--md-ease);
+}
+.btn-tonal:hover { box-shadow: 0 1px 3px 1px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.3); }
+.btn-tonal:active { transform: scale(0.97); }
+.btn-tonal .material-symbols-rounded { font-size: 20px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   APP SHELL
+   ═══════════════════════════════════════════════════════════════ */
+#app { display: none; flex-direction: column; height: 100dvh; }
+
+/* TOP APP BAR */
+#topbar {
+  height: var(--topbar-h); padding: 0 4px 0 4px;
+  display: flex; align-items: center; gap: 0;
+  background: var(--md-surface);
+  border-bottom: 1px solid var(--md-outline-variant);
+  flex-shrink: 0; position: relative; z-index: 10;
+  transition: background var(--md-dur-med) var(--md-ease);
+}
+
+.topbar-title {
+  font-size: 18px; font-weight: 500; letter-spacing: -0.1px; padding: 0 4px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
+}
+.topbar-spacer { flex: 1; min-width: 0; }
+.topbar-path {
+  font-size: 12px; color: var(--md-outline); padding: 0 12px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 280px;
+}
+.unsaved-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--md-tertiary);
+  display: none; flex-shrink: 0; margin-right: 4px;
+}
+.unsaved-dot.show { display: block; }
+
+.topbar-divider { width: 1px; height: 24px; background: var(--md-outline-variant); margin: 0 2px; flex-shrink: 0; }
+
+/* APP BODY */
+#app-body { flex: 1; display: flex; overflow: hidden; position: relative; }
+
+/* ═══════════════════════════════════════════════════════════════
+   SIDEBAR
+   ═══════════════════════════════════════════════════════════════ */
+#sidebar {
+  width: var(--sidebar-w); flex-shrink: 0; display: flex; flex-direction: column;
+  background: var(--md-surface-container-low);
+  border-right: 1px solid var(--md-outline-variant);
+  transition: background var(--md-dur-med) var(--md-ease);
+  overflow: hidden;
+}
+
+#sidebar-header { padding: 16px 12px 0; display: flex; flex-direction: column; gap: 12px; flex-shrink: 0; }
+
+.sidebar-row { display: flex; align-items: center; gap: 4px; }
+.sidebar-row .toggle-row { margin-left: auto; font-size: 12px; gap: 6px; }
+.sidebar-row .switch { width: 44px; height: 28px; }
+.sidebar-row .switch .track { border-width: 1.5px; }
+.sidebar-row .switch .thumb { width: 14px; height: 14px; left: 5px; }
+.sidebar-row .switch input:checked ~ .thumb { left: 22px; width: 20px; height: 20px; }
+
+.search-field {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--md-surface-container-high); border-radius: 28px;
+  padding: 0 12px; height: 44px; margin-bottom: 8px;
+  transition: all var(--md-dur-short) var(--md-ease);
+  border: 2px solid transparent;
+}
+.search-field:focus-within { background: var(--md-surface-container-highest); border-color: var(--md-primary); }
+.search-field .material-symbols-rounded { font-size: 22px; color: var(--md-on-surface-variant); flex-shrink: 0; }
+.search-field input {
+  flex: 1; border: none; background: none; outline: none;
+  font: 400 14px/20px 'Roboto Flex', sans-serif; color: var(--md-on-surface); min-width: 0;
+}
+.search-field input::placeholder { color: var(--md-outline); }
+.search-clear { display: none; cursor: pointer; }
+.search-field input:not(:placeholder-shown) ~ .search-clear { display: block; }
+
+/* FILE TREE */
+#file-tree { flex: 1; overflow-y: auto; padding: 4px 8px 12px; }
+#file-tree::-webkit-scrollbar { width: 4px; }
+#file-tree::-webkit-scrollbar-thumb { background: var(--md-outline-variant); border-radius: 4px; }
+
+.tree-item {
+  display: flex; align-items: center; gap: 10px;
+  height: 44px; padding: 0 16px; margin: 2px 0;
+  border-radius: 28px; cursor: pointer; font-size: 14px;
+  color: var(--md-on-surface-variant);
+  transition: background 0.08s; white-space: nowrap; overflow: hidden;
+}
+.tree-item:hover { background: var(--md-elevation-2); }
+.tree-item.active {
+  background: var(--md-secondary-container); color: var(--md-on-secondary-container); font-weight: 500;
+}
+.tree-item .material-symbols-rounded { font-size: 20px; flex-shrink: 0; }
+.tree-item.active .material-symbols-rounded { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+.tree-label { overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.tree-indent { width: 20px; flex-shrink: 0; }
+.tree-folder { color: var(--md-on-surface); font-weight: 500; }
+.tree-folder .material-symbols-rounded:first-of-type { color: var(--md-primary); }
+.tree-chevron { margin-left: auto; font-size: 18px !important; color: var(--md-on-surface-variant) !important; opacity: 0.6; }
+.tree-section { font-size: 11px; font-weight: 600; color: var(--md-outline); text-transform: uppercase; letter-spacing: 1px; padding: 14px 16px 6px; }
+.tree-empty { padding: 40px 16px; text-align: center; color: var(--md-outline); font-size: 14px; line-height: 1.5; }
+.tree-empty .material-symbols-rounded { font-size: 48px; display: block; margin: 0 auto 12px; opacity: 0.4; }
+.search-match { background: var(--md-tertiary-container); border-radius: 2px; padding: 0 1px; }
+
+#scrim { display: none; position: fixed; inset: 0; background: var(--md-scrim); z-index: 50; }
+
+/* ═══════════════════════════════════════════════════════════════
+   MAIN CONTENT
+   ═══════════════════════════════════════════════════════════════ */
+#main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+/* TOOLBAR STRIP */
+#toolbar-strip {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 16px; flex-shrink: 0;
+  background: var(--md-surface-container-low);
+  border-bottom: 1px solid var(--md-outline-variant);
+  transition: background var(--md-dur-med) var(--md-ease);
+}
+#toolbar-strip::-webkit-scrollbar { height: 0; }
+
+/* SEGMENTED BUTTON */
+.seg-group {
+  display: inline-flex; border-radius: 20px; overflow: hidden;
+  border: 1px solid var(--md-outline); flex-shrink: 0; height: 40px;
+}
+.seg-item {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 0 20px; border: none; background: none;
+  font: 500 14px/20px 'Roboto Flex', sans-serif; cursor: pointer;
+  color: var(--md-on-surface); transition: all 0.12s;
+  border-right: 1px solid var(--md-outline); white-space: nowrap;
+}
+.seg-item:last-child { border-right: none; }
+.seg-item .material-symbols-rounded { font-size: 18px; }
+.seg-item.active { background: var(--md-secondary-container); color: var(--md-on-secondary-container); }
+.seg-item:not(.active):hover { background: var(--md-elevation-2); }
+.seg-label { display: inline; }
+
+.tb-spacer { flex: 1; }
+
+/* FORMAT TOOLBAR */
+#fmt-toolbar {
+  display: none; align-items: center; gap: 2px;
+  padding: 6px 16px; flex-shrink: 0;
+  border-bottom: 1px solid var(--md-outline-variant);
+  overflow-x: auto; background: var(--md-surface);
+  transition: background var(--md-dur-med) var(--md-ease);
+}
+#fmt-toolbar::-webkit-scrollbar { height: 0; }
+
+.fmt-btn {
+  min-width: 36px; height: 36px; border-radius: 8px; border: none;
+  background: none; color: var(--md-on-surface-variant); cursor: pointer;
+  display: grid; place-items: center; flex-shrink: 0; transition: background 0.08s;
+  font-family: 'Roboto Flex', sans-serif;
+}
+.fmt-btn:hover { background: var(--md-elevation-2); }
+.fmt-btn:active { background: var(--md-elevation-3); }
+.fmt-btn .material-symbols-rounded { font-size: 20px; }
+.fmt-sep { width: 1px; height: 20px; background: var(--md-outline-variant); margin: 0 6px; flex-shrink: 0; }
+
+/* CONTENT PANELS */
+#content-area { flex: 1; display: flex; overflow: hidden; }
+
+#editor-panel { display: none; flex: 1; flex-direction: column; min-width: 0; }
+#editor {
+  flex: 1; resize: none; border: none;
+  background: var(--md-surface); color: var(--md-on-surface);
+  padding: 32px 36px; font: 400 14px/1.7 'Roboto Mono', monospace;
+  outline: none; overflow-y: auto; tab-size: 2;
+  transition: background var(--md-dur-med) var(--md-ease);
+}
+#editor::placeholder { color: var(--md-outline); }
+#editor::-webkit-scrollbar { width: 8px; }
+#editor::-webkit-scrollbar-track { background: transparent; }
+#editor::-webkit-scrollbar-thumb { background: var(--md-outline-variant); border-radius: 4px; border: 2px solid var(--md-surface); }
+
+.panel-divider { width: 1px; background: var(--md-outline-variant); flex-shrink: 0; display: none; }
+
+#preview-panel {
+  flex: 1; overflow-y: auto; padding: 32px 36px; min-width: 0;
+  background: var(--md-surface);
+  transition: background var(--md-dur-med) var(--md-ease);
+}
+#preview-panel::-webkit-scrollbar { width: 8px; }
+#preview-panel::-webkit-scrollbar-track { background: transparent; }
+#preview-panel::-webkit-scrollbar-thumb { background: var(--md-outline-variant); border-radius: 4px; border: 2px solid var(--md-surface); }
+
+.empty-state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 100%; color: var(--md-outline); text-align: center; gap: 8px; padding: 32px;
+}
+.empty-state .material-symbols-rounded { font-size: 56px; opacity: 0.3; }
+.empty-state h3 { font-size: 18px; font-weight: 500; color: var(--md-on-surface-variant); }
+.empty-state p { font-size: 14px; max-width: 300px; line-height: 1.5; }
+
+/* ═══════════════════════════════════════════════════════════════
+   PREVIEW MARKDOWN
+   ═══════════════════════════════════════════════════════════════ */
+#preview { max-width: 720px; margin: 0 auto; line-height: 1.75; font-size: 15px; animation: fadeIn 0.15s; }
+#preview:empty { display: none; }
+#preview h1, #preview h2, #preview h3, #preview h4, #preview h5, #preview h6 { margin-top: 1.4em; margin-bottom: 0.5em; font-weight: 600; line-height: 1.3; }
+#preview h1 { font-size: 2em; border-bottom: 1px solid var(--md-outline-variant); padding-bottom: 0.3em; }
+#preview h2 { font-size: 1.5em; border-bottom: 1px solid var(--md-outline-variant); padding-bottom: 0.25em; }
+#preview h3 { font-size: 1.2em; }
+#preview p { margin: 0.75em 0; }
+#preview a { color: var(--md-primary); text-decoration: none; }
+#preview a:hover { text-decoration: underline; }
+#preview code {
+  font-family: 'Roboto Mono', monospace; font-size: 0.87em;
+  background: var(--md-surface-container-highest); padding: 2px 6px; border-radius: 4px;
+}
+#preview pre {
+  background: var(--md-surface-container-highest); padding: 16px 20px;
+  border-radius: 12px; overflow-x: auto; margin: 1.2em 0;
+}
+#preview pre code { background: none; padding: 0; font-size: 13px; line-height: 1.6; }
+#preview blockquote {
+  border-left: 4px solid var(--md-primary); padding: 2px 0 2px 16px;
+  margin: 1em 0; color: var(--md-on-surface-variant);
+}
+#preview ul, #preview ol { padding-left: 24px; margin: 0.75em 0; }
+#preview li { margin: 0.25em 0; }
+#preview li > p { margin: 0.25em 0; }
+#preview table { border-collapse: collapse; width: 100%; margin: 1.2em 0; font-size: 14px; }
+#preview th, #preview td { border: 1px solid var(--md-outline-variant); padding: 10px 14px; text-align: left; }
+#preview th { background: var(--md-surface-container-high); font-weight: 500; }
+#preview img { max-width: 100%; border-radius: 12px; margin: 1em 0; display: block; }
+#preview hr { border: none; border-top: 1px solid var(--md-outline-variant); margin: 2em 0; }
+#preview input[type="checkbox"] { accent-color: var(--md-primary); margin-right: 6px; }
+
+[data-theme="dark"] #preview pre, [data-theme="dark"] #preview pre code,
+[data-theme="dark"] .hljs { background: var(--md-surface-container-highest) !important; }
+
+/* ═══════════════════════════════════════════════════════════════
+   FAB
+   ═══════════════════════════════════════════════════════════════ */
+#fab {
+  position: fixed; bottom: 20px; right: 20px; z-index: 30;
+  display: none; align-items: center; gap: 10px;
+  background: var(--md-primary-container); color: var(--md-on-primary-container);
+  border: none; border-radius: 16px; padding: 16px 20px;
+  font: 500 14px/20px 'Roboto Flex', sans-serif; cursor: pointer;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.10);
+  transition: all var(--md-dur-short) var(--md-ease);
+}
+#fab:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.16), 0 12px 32px rgba(0,0,0,0.14); }
+#fab:active { transform: scale(0.95); }
+#fab .material-symbols-rounded { font-size: 24px; }
+.fab-label { white-space: nowrap; }
+
+/* ═══════════════════════════════════════════════════════════════
+   MENUS
+   ═══════════════════════════════════════════════════════════════ */
+.menu-popup {
+  display: none; position: fixed; z-index: 200;
+  min-width: 220px; padding: 8px 0;
+  background: var(--md-surface-container); border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.08);
+  animation: scaleIn 0.12s var(--md-ease);
+}
+.menu-popup.show { display: block; }
+
+.menu-item {
+  display: flex; align-items: center; gap: 12px;
+  height: 44px; padding: 0 16px; margin: 0 8px; border-radius: 8px;
+  font-size: 14px; color: var(--md-on-surface); cursor: pointer;
+  transition: background 0.06s;
+}
+.menu-item:hover { background: var(--md-elevation-2); }
+.menu-item .material-symbols-rounded { font-size: 20px; color: var(--md-on-surface-variant); flex-shrink: 0; }
+.menu-item.danger { color: var(--md-error); }
+.menu-item.danger .material-symbols-rounded { color: var(--md-error); }
+.menu-item .shortcut {
+  margin-left: auto; font-size: 12px; color: var(--md-outline);
+  font-family: 'Roboto Mono', monospace; letter-spacing: 0.5px;
+}
+.menu-sep { height: 1px; background: var(--md-outline-variant); margin: 8px 16px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   DIALOGS
+   ═══════════════════════════════════════════════════════════════ */
+.dialog-scrim {
+  display: none; position: fixed; inset: 0; background: var(--md-scrim); z-index: 300; place-items: center;
+}
+.dialog-scrim.show { display: grid; }
+
+.dialog {
+  background: var(--md-surface-container-high); border-radius: 28px;
+  padding: 28px; width: min(420px, calc(100vw - 48px));
+  box-shadow: 0 8px 32px rgba(0,0,0,0.16);
+  animation: scaleIn var(--md-dur-short) var(--md-ease);
+}
+.dialog-icon { text-align: center; margin-bottom: 20px; color: var(--md-primary); }
+.dialog-icon .material-symbols-rounded { font-size: 24px; }
+.dialog h3 { font-size: 24px; font-weight: 400; margin-bottom: 20px; text-align: center; }
+.dialog-body { margin-bottom: 28px; }
+
+.text-field { position: relative; }
+.text-field input {
+  width: 100%; height: 52px; padding: 14px 16px;
+  border: 1px solid var(--md-outline); border-radius: 4px;
+  background: transparent; font: 400 16px/24px 'Roboto Flex', sans-serif;
+  color: var(--md-on-surface); outline: none; transition: border-color var(--md-dur-short);
+}
+.text-field input:focus { border-color: var(--md-primary); border-width: 2px; padding: 13px 15px; }
+.text-field label {
+  position: absolute; left: 12px; top: -8px; padding: 0 4px;
+  background: var(--md-surface-container-high); font-size: 12px; color: var(--md-outline);
+  transition: color var(--md-dur-short);
+}
+.text-field input:focus ~ label { color: var(--md-primary); }
+.text-field .supporting { font-size: 12px; color: var(--md-on-surface-variant); margin-top: 6px; padding: 0 16px; }
+
+.dialog-actions { display: flex; justify-content: flex-end; gap: 12px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   HELP DIALOG
+   ═══════════════════════════════════════════════════════════════ */
+#help-scrim { display: none; position: fixed; inset: 0; background: var(--md-scrim); z-index: 300; place-items: center; }
+#help-scrim.show { display: grid; }
+
+#help-dialog {
+  background: var(--md-surface-container-high); border-radius: 28px;
+  padding: 28px 32px; width: min(560px, calc(100vw - 32px)); max-height: calc(100dvh - 64px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.16); animation: scaleIn var(--md-dur-short) var(--md-ease);
+  overflow-y: auto;
+}
+#help-dialog::-webkit-scrollbar { width: 6px; }
+#help-dialog::-webkit-scrollbar-thumb { background: var(--md-outline-variant); border-radius: 3px; }
+
+#help-dialog h2 { font-size: 24px; font-weight: 400; margin-bottom: 24px; text-align: center; }
+.help-section { margin-bottom: 24px; }
+.help-section h4 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--md-outline); margin-bottom: 12px; }
+
+.shortcut-list { display: flex; flex-direction: column; gap: 4px; }
+.shortcut-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px; border-radius: 12px;
+  font-size: 14px; color: var(--md-on-surface);
+}
+.shortcut-row:nth-child(odd) { background: var(--md-elevation-1); }
+.shortcut-keys {
+  display: flex; gap: 4px; flex-shrink: 0;
+}
+.kbd {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 28px; height: 28px; padding: 0 8px;
+  background: var(--md-surface-container-highest); border-radius: 6px;
+  font: 500 12px/1 'Roboto Mono', monospace; color: var(--md-on-surface);
+  border: 1px solid var(--md-outline-variant);
+}
+
+.help-footer { text-align: center; padding-top: 8px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   SNACKBAR
+   ═══════════════════════════════════════════════════════════════ */
+#snackbar {
+  position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px);
+  z-index: 400; padding: 14px 24px; border-radius: 12px;
+  background: var(--md-inverse-surface); color: var(--md-inverse-on-surface);
+  font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transition: transform var(--md-dur-med) var(--md-ease);
+  display: flex; align-items: center; gap: 10px;
+  max-width: min(480px, calc(100vw - 48px));
+}
+#snackbar.show { transform: translateX(-50%) translateY(0); }
+#snackbar .material-symbols-rounded { font-size: 20px; flex-shrink: 0; }
+
+/* ═══════════════════════════════════════════════════════════════
+   BOTTOM BAR (mobile)
+   ═══════════════════════════════════════════════════════════════ */
+#bottombar {
+  display: none; height: 80px; padding: 0 24px 8px;
+  background: var(--md-surface-container);
+  border-top: 1px solid var(--md-outline-variant);
+  align-items: center; justify-content: space-around; flex-shrink: 0;
+}
+.bottombar-item {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  background: none; border: none; color: var(--md-on-surface-variant);
+  font: 500 12px/1 'Roboto Flex', sans-serif; cursor: pointer;
+  padding: 4px 20px;
+}
+.bottombar-item.active { color: var(--md-on-secondary-container); }
+.bb-indicator {
+  display: flex; align-items: center; justify-content: center;
+  width: 56px; height: 32px; border-radius: 16px; transition: background 0.15s;
+}
+.bottombar-item.active .bb-indicator { background: var(--md-secondary-container); }
+.bottombar-item:hover .bb-indicator { background: var(--md-elevation-2); }
+.bottombar-item .material-symbols-rounded { font-size: 24px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  :root { --sidebar-w: 300px; }
+  .seg-label { display: none; }
+  .seg-item { padding: 0 16px; }
+
+  #sidebar {
+    position: fixed; left: 0; top: 0; bottom: 0; z-index: 60;
+    transform: translateX(-100%);
+    transition: transform var(--md-dur-med) var(--md-ease);
+    border-right: none; box-shadow: none;
+  }
+  #sidebar.open { transform: translateX(0); box-shadow: 4px 0 24px rgba(0,0,0,0.14); }
+  #scrim.show { display: block; animation: fadeIn 0.15s; }
+  #fab { display: flex; }
+  .topbar-path { display: none; }
+}
+
+@media (min-width: 1025px) {
+  #sidebar { position: static; transform: none !important; }
+  #sidebar.hidden { display: none; }
+  #fab { display: flex; }
+  .fab-label { display: inline; }
+}
+
+@media (max-width: 640px) {
+  :root { --sidebar-w: min(320px, 85vw); --topbar-h: 56px; }
+  #toolbar-strip { display: none; }
+  #bottombar { display: flex; }
+  #fab { bottom: 96px; right: 16px; }
+  .fab-label { display: none; }
+  #editor { padding: 20px; font-size: 15px; }
+  #preview-panel { padding: 20px; }
+  #preview { font-size: 15px; }
+  .fmt-btn { min-width: 40px; height: 40px; }
+  .topbar-title { font-size: 16px; }
+  #help-dialog { padding: 24px; }
+  .shortcut-row { font-size: 13px; }
+}
+</style>
+</head>
+<body>
+
+<!-- LANDING -->
+<div id="landing">
+  <div class="hero-icon"><span class="material-symbols-rounded">edit_document</span></div>
+  <h1>simple-mk-web</h1>
+  <p>Browse, edit, and preview markdown files from any folder on your device.</p>
+  <label class="toggle-row" style="margin-top:4px">
+    <span class="switch">
+      <input type="checkbox" id="recursive-toggle" checked>
+      <span class="track"></span><span class="thumb"></span>
+    </span>
+    Include subfolders
+  </label>
+  <button class="btn-tonal" id="open-btn">
+    <span class="material-symbols-rounded">folder_open</span> Open Folder
+  </button>
+  <div class="privacy">Your files stay on your device. Nothing is uploaded.</div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <!-- Top App Bar -->
+  <header id="topbar">
+    <button class="icon-btn" id="menu-btn" aria-label="Toggle sidebar">
+      <span class="material-symbols-rounded">menu</span>
+    </button>
+    <span class="topbar-title" id="topbar-title"></span>
+    <span class="topbar-spacer"></span>
+    <span class="topbar-path" id="topbar-path"></span>
+    <span class="unsaved-dot" id="unsaved-dot" title="Unsaved changes"></span>
+    <span class="topbar-divider"></span>
+    <button class="icon-btn" id="theme-btn" aria-label="Toggle theme">
+      <span class="material-symbols-rounded">light_mode</span>
+    </button>
+    <button class="icon-btn" id="help-btn" aria-label="Keyboard shortcuts">
+      <span class="material-symbols-rounded">help_outline</span>
+    </button>
+    <button class="icon-btn" id="more-btn" aria-label="More options">
+      <span class="material-symbols-rounded">more_vert</span>
+    </button>
+  </header>
+
+  <div id="app-body">
+    <div id="scrim"></div>
+
+    <!-- Sidebar -->
+    <nav id="sidebar">
+      <div id="sidebar-header">
+        <div class="sidebar-row">
+          <button class="icon-btn" title="New file" data-action="new-file" aria-label="New file">
+            <span class="material-symbols-rounded">note_add</span>
+          </button>
+          <button class="icon-btn" title="New folder" data-action="new-folder" aria-label="New folder">
+            <span class="material-symbols-rounded">create_new_folder</span>
+          </button>
+          <button class="icon-btn" title="Refresh" data-action="refresh" aria-label="Refresh">
+            <span class="material-symbols-rounded">refresh</span>
+          </button>
+          <label class="toggle-row">
+            <span class="switch">
+              <input type="checkbox" id="recursive-toggle-app" checked>
+              <span class="track"></span><span class="thumb"></span>
+            </span>
+          </label>
+        </div>
+        <div class="search-field">
+          <span class="material-symbols-rounded">search</span>
+          <input type="text" id="search-input" placeholder="Search files" aria-label="Search files">
+          <span class="material-symbols-rounded search-clear" id="search-clear">close</span>
+        </div>
+      </div>
+      <div id="file-tree" role="tree"></div>
+    </nav>
+
+    <!-- Main -->
+    <main id="main">
+      <div id="toolbar-strip">
+        <div class="seg-group" role="radiogroup" aria-label="View mode">
+          <button class="seg-item" data-view="editor" role="radio">
+            <span class="material-symbols-rounded">edit_note</span><span class="seg-label">Editor</span>
+          </button>
+          <button class="seg-item" data-view="split" role="radio">
+            <span class="material-symbols-rounded">vertical_split</span><span class="seg-label">Split</span>
+          </button>
+          <button class="seg-item active" data-view="preview" role="radio" aria-checked="true">
+            <span class="material-symbols-rounded">visibility</span><span class="seg-label">Preview</span>
+          </button>
+        </div>
+        <span class="tb-spacer"></span>
+      </div>
+
+      <div id="fmt-toolbar">
+        <button class="fmt-btn" data-fmt="bold" title="Bold (⌘B)"><span class="material-symbols-rounded">format_bold</span></button>
+        <button class="fmt-btn" data-fmt="italic" title="Italic (⌘I)"><span class="material-symbols-rounded">format_italic</span></button>
+        <button class="fmt-btn" data-fmt="strike" title="Strikethrough"><span class="material-symbols-rounded">format_strikethrough</span></button>
+        <span class="fmt-sep"></span>
+        <button class="fmt-btn" data-fmt="h1" title="Heading 1" style="font-weight:700;font-size:14px">H1</button>
+        <button class="fmt-btn" data-fmt="h2" title="Heading 2" style="font-weight:600;font-size:13px">H2</button>
+        <button class="fmt-btn" data-fmt="h3" title="Heading 3" style="font-weight:500;font-size:12px">H3</button>
+        <span class="fmt-sep"></span>
+        <button class="fmt-btn" data-fmt="code" title="Inline code"><span class="material-symbols-rounded">code</span></button>
+        <button class="fmt-btn" data-fmt="codeblock" title="Code block"><span class="material-symbols-rounded">data_object</span></button>
+        <button class="fmt-btn" data-fmt="link" title="Link (⌘K)"><span class="material-symbols-rounded">link</span></button>
+        <span class="fmt-sep"></span>
+        <button class="fmt-btn" data-fmt="ul" title="Bullet list"><span class="material-symbols-rounded">format_list_bulleted</span></button>
+        <button class="fmt-btn" data-fmt="ol" title="Numbered list"><span class="material-symbols-rounded">format_list_numbered</span></button>
+        <button class="fmt-btn" data-fmt="quote" title="Blockquote"><span class="material-symbols-rounded">format_quote</span></button>
+        <button class="fmt-btn" data-fmt="hr" title="Horizontal rule"><span class="material-symbols-rounded">horizontal_rule</span></button>
+      </div>
+
+      <div id="content-area">
+        <div id="editor-panel"><textarea id="editor" spellcheck="false" placeholder="Start writing markdown..."></textarea></div>
+        <div class="panel-divider" id="panel-divider"></div>
+        <div id="preview-panel">
+          <div class="empty-state" id="empty-state">
+            <span class="material-symbols-rounded">edit_document</span>
+            <h3>Select a file</h3>
+            <p>Choose a file from the sidebar, or create a new one to get started.</p>
+          </div>
+          <div id="preview"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="bottombar">
+    <button class="bottombar-item" data-view="editor">
+      <span class="bb-indicator"><span class="material-symbols-rounded">edit_note</span></span>Editor
+    </button>
+    <button class="bottombar-item active" data-view="preview">
+      <span class="bb-indicator"><span class="material-symbols-rounded">visibility</span></span>Preview
+    </button>
+  </div>
+
+  <button id="fab" aria-label="New file">
+    <span class="material-symbols-rounded">add</span><span class="fab-label">New file</span>
+  </button>
+</div>
+
+<!-- Overflow menu -->
+<div class="menu-popup" id="overflow-menu">
+  <div class="menu-item" data-action="open-folder"><span class="material-symbols-rounded">folder_open</span>Open Folder<span class="shortcut">⌘O</span></div>
+  <div class="menu-sep"></div>
+  <div class="menu-item" data-action="new-file"><span class="material-symbols-rounded">note_add</span>New File<span class="shortcut">⌘N</span></div>
+  <div class="menu-item" data-action="new-folder"><span class="material-symbols-rounded">create_new_folder</span>New Folder<span class="shortcut">⇧⌘N</span></div>
+  <div class="menu-sep"></div>
+  <div class="menu-item" data-action="save"><span class="material-symbols-rounded">save</span>Save<span class="shortcut">⌘S</span></div>
+  <div class="menu-sep"></div>
+  <div class="menu-item" data-action="toggle-sidebar"><span class="material-symbols-rounded">side_navigation</span>Toggle Sidebar<span class="shortcut">⌘\\</span></div>
+  <div class="menu-item" data-action="show-help"><span class="material-symbols-rounded">keyboard</span>Keyboard Shortcuts<span class="shortcut">?</span></div>
+</div>
+
+<!-- Context menu -->
+<div class="menu-popup" id="ctx-menu"></div>
+
+<!-- Input dialog -->
+<div class="dialog-scrim" id="dialog-scrim">
+  <div class="dialog">
+    <div class="dialog-icon" id="dialog-icon"><span class="material-symbols-rounded">note_add</span></div>
+    <h3 id="dialog-title">New file</h3>
+    <div class="dialog-body">
+      <div class="text-field">
+        <input id="dialog-input" autocomplete="off" placeholder=" ">
+        <label id="dialog-label">File name</label>
+        <div class="supporting" id="dialog-hint"></div>
+      </div>
+    </div>
+    <div class="dialog-actions">
+      <button class="m3-btn m3-btn-text" id="dialog-cancel">Cancel</button>
+      <button class="m3-btn m3-btn-tonal" id="dialog-confirm">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm dialog -->
+<div class="dialog-scrim" id="confirm-scrim">
+  <div class="dialog">
+    <div class="dialog-icon" id="confirm-icon"><span class="material-symbols-rounded">delete</span></div>
+    <h3 id="confirm-title">Delete file?</h3>
+    <div class="dialog-body"><p id="confirm-body" style="font-size:14px;color:var(--md-on-surface-variant);text-align:center;line-height:1.6"></p></div>
+    <div class="dialog-actions">
+      <button class="m3-btn m3-btn-text" id="confirm-cancel">Cancel</button>
+      <button class="m3-btn m3-btn-filled error" id="confirm-ok">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- Help dialog -->
+<div id="help-scrim">
+  <div id="help-dialog">
+    <h2>Keyboard Shortcuts</h2>
+    <div class="help-section">
+      <h4>General</h4>
+      <div class="shortcut-list">
+        <div class="shortcut-row">Open folder<span class="shortcut-keys"><span class="kbd">⌘</span><span class="kbd">O</span></span></div>
+        <div class="shortcut-row">Save file<span class="shortcut-keys"><span class="kbd">⌘</span><span class="kbd">S</span></span></div>
+        <div class="shortcut-row">New file<span class="shortcut-keys"><span class="kbd">⌘</span><span class="kbd">N</span></span></div>
+        <div class="shortcut-row">New folder<span class="shortcut-keys"><span class="kbd">⇧</span><span class="kbd">⌘</span><span class="kbd">N</span></span></div>
+        <div class="shortcut-row">Toggle sidebar<span class="shortcut-keys"><span class="kbd">⌘</span><span class="kbd">\</span></span></div>
+        <div class="shortcut-row">Search files<span class="shortcut-keys"><span class="kbd">⌘</span><span class="kbd">K</span></span></div>
+      </div>
+    </div>
+    <div class="help-section">
+      <h4>View</h4>
+      <div class="shortcut-list">
+        <div class="shortcut-row">Editor view<span class="shortcut-keys"><span class="kbd">⌘</span><span class="kbd">1</span></span></div>
+        <div class="shortcut-row">Split view<span class="shortcut-keys"><span class="kbd">⌘</span><span class="kbd">2</span></span></div>
+        <div class="shortcut-row">Preview view<span class="shortcut-keys"><span class="kbd">⌘</span><span class="kbd">3</span></span></div>
+      </div>
+    </div>
+    <div class="help-section">
+      <h4>Formatting</h4>
+      <div class="shortcut-list">
+        <div class="shortcut-row">Bold<span class="shortcut-keys"><span class="kbd">⌘</span><span class="kbd">B</span></span></div>
+        <div class="shortcut-row">Italic<span class="shortcut-keys"><span class="kbd">⌘</span><span class="kbd">I</span></span></div>
+        <div class="shortcut-row">Insert link<span class="shortcut-keys"><span class="kbd">⌘</span><span class="kbd">K</span></span></div>
+        <div class="shortcut-row">Heading 1<span class="shortcut-keys"><span class="kbd">⌘</span><span class="kbd">⇧</span><span class="kbd">1</span></span></div>
+        <div class="shortcut-row">Heading 2<span class="shortcut-keys"><span class="kbd">⌘</span><span class="kbd">⇧</span><span class="kbd">2</span></span></div>
+        <div class="shortcut-row">Heading 3<span class="shortcut-keys"><span class="kbd">⌘</span><span class="kbd">⇧</span><span class="kbd">3</span></span></div>
+      </div>
+    </div>
+    <div class="help-footer">
+      <button class="m3-btn m3-btn-tonal" id="help-close">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- Snackbar -->
+<div id="snackbar"><span class="material-symbols-rounded">check_circle</span><span id="snackbar-msg"></span></div>
+
+<script>
+// ═════════════════════════════════════════════════════════════════
+// STATE
+// ═════════════════════════════════════════════════════════════════
+let dirHandle = null, allEntries = [], activeEl = null;
+let currentFileHandle = null, currentDirHandle = null, currentFilePath = '';
+let originalContent = '', viewMode = 'preview', sidebarOpen = true, theme = 'light';
+
+const $ = id => document.getElementById(id);
+const editor = $('editor'), preview = $('preview'), emptyState = $('empty-state');
+const fileTree = $('file-tree'), searchInput = $('search-input');
+const unsavedDot = $('unsaved-dot'), sidebar = $('sidebar'), scrim = $('scrim');
+
+// ═════════════════════════════════════════════════════════════════
+// MARKED + HIGHLIGHT.JS
+// ═════════════════════════════════════════════════════════════════
+marked.setOptions({
+  highlight: (code, lang) => {
+    if (lang && hljs.getLanguage(lang)) return hljs.highlight(code, { language: lang }).value;
+    return hljs.highlightAuto(code).value;
+  },
+  breaks: false, gfm: true
+});
+
+// ═════════════════════════════════════════════════════════════════
+// THEME
+// ═════════════════════════════════════════════════════════════════
+function setTheme(t) {
+  theme = t;
+  document.documentElement.dataset.theme = t;
+  $('theme-btn').querySelector('.material-symbols-rounded').textContent = t === 'dark' ? 'dark_mode' : 'light_mode';
+  $('hljs-light').disabled = t === 'dark';
+  $('hljs-dark').disabled = t !== 'dark';
+  localStorage.setItem('mk_theme', t);
+}
+$('theme-btn').addEventListener('click', () => setTheme(theme === 'light' ? 'dark' : 'light'));
+
+// ═════════════════════════════════════════════════════════════════
+// SIDEBAR
+// ═════════════════════════════════════════════════════════════════
+function toggleSidebar() {
+  if (window.innerWidth > 1024) {
+    sidebarOpen = !sidebarOpen;
+    sidebar.classList.toggle('hidden', !sidebarOpen);
+    localStorage.setItem('mk_sidebarOpen', sidebarOpen);
+  } else {
+    sidebar.classList.toggle('open');
+    scrim.classList.toggle('show', sidebar.classList.contains('open'));
+  }
+}
+function closeMobileDrawer() { sidebar.classList.remove('open'); scrim.classList.remove('show'); }
+$('menu-btn').addEventListener('click', toggleSidebar);
+scrim.addEventListener('click', closeMobileDrawer);
+
+// ═════════════════════════════════════════════════════════════════
+// VIEW MODE
+// ═════════════════════════════════════════════════════════════════
+function setView(mode) {
+  viewMode = mode;
+  const mob = window.innerWidth <= 640;
+  const showEd = mode === 'editor' || (mode === 'split' && !mob);
+  const showPv = mode === 'preview' || (mode === 'split' && !mob);
+
+  $('editor-panel').style.display = showEd ? 'flex' : 'none';
+  $('panel-divider').style.display = mode === 'split' && !mob ? 'block' : 'none';
+  $('preview-panel').style.display = showPv ? 'block' : 'none';
+  $('fmt-toolbar').style.display = showEd ? 'flex' : 'none';
+
+  document.querySelectorAll('.seg-item').forEach(b => {
+    const on = b.dataset.view === mode;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-checked', on);
+  });
+  document.querySelectorAll('.bottombar-item').forEach(b => {
+    b.classList.toggle('active', b.dataset.view === (mob && mode === 'split' ? 'preview' : mode));
+  });
+  localStorage.setItem('mk_viewMode', mode);
+}
+
+document.querySelectorAll('[data-view]').forEach(btn => {
+  btn.addEventListener('click', () => setView(btn.dataset.view));
+});
+
+// ═════════════════════════════════════════════════════════════════
+// FOLDER
+// ═════════════════════════════════════════════════════════════════
+async function pickFolder() {
+  try {
+    dirHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
+    await activateApp();
+  } catch (e) { /* cancelled */ }
+}
+
+async function activateApp() {
+  $('topbar-title').textContent = dirHandle.name;
+  $('landing').style.display = 'none';
+  $('app').style.display = 'flex';
+  currentFileHandle = null; currentFilePath = '';
+  editor.value = ''; preview.innerHTML = '';
+  emptyState.style.display = 'flex';
+  unsavedDot.classList.remove('show');
+  $('topbar-path').textContent = '';
+  searchInput.value = '';
+  await storeHandle(dirHandle);
+  await loadFolder();
+  setView(viewMode);
+}
+
+$('open-btn').addEventListener('click', pickFolder);
+
+async function loadFolder() {
+  const rec = $('recursive-toggle-app').checked;
+  allEntries = await collectEntries(dirHandle, '', rec, dirHandle);
+  renderFiltered();
+}
+
+async function collectEntries(handle, path, recursive, parentDir) {
+  const dirs = [], files = [];
+  for await (const entry of handle.values()) {
+    if (entry.kind === 'directory') {
+      if (recursive) {
+        const sub = path ? `${path}/${entry.name}` : entry.name;
+        const children = await collectEntries(entry, sub, true, entry);
+        if (children.length > 0) dirs.push({ name: entry.name, kind: 'directory', path: sub, children, handle: entry, parentHandle: parentDir });
+      }
+    } else if (/\.(md|markdown|mdown|mkd|mdx)$/i.test(entry.name)) {
+      files.push({ name: entry.name, displayName: entry.name.replace(/\.(md|markdown|mdown|mkd|mdx)$/i, ''), kind: 'file', path: path ? `${path}/${entry.name}` : entry.name, handle: entry, dirHandle: handle });
+    }
+  }
+  dirs.sort((a, b) => a.name.localeCompare(b.name));
+  files.sort((a, b) => a.name.localeCompare(b.name));
+  return [...dirs, ...files];
+}
+
+// ═════════════════════════════════════════════════════════════════
+// TREE RENDERING
+// ═════════════════════════════════════════════════════════════════
+function flattenFiles(entries) {
+  const r = [];
+  for (const e of entries) { if (e.kind === 'directory') r.push(...flattenFiles(e.children)); else r.push(e); }
+  return r;
+}
+
+function renderFiltered() {
+  const q = searchInput.value.trim().toLowerCase();
+  fileTree.innerHTML = '';
+  if (q) {
+    const matches = flattenFiles(allEntries).filter(f => f.displayName.toLowerCase().includes(q) || f.path.toLowerCase().includes(q));
+    if (!matches.length) {
+      fileTree.innerHTML = '<div class="tree-empty"><span class="material-symbols-rounded">search_off</span>No files match your search</div>';
+      return;
+    }
+    const lbl = document.createElement('div'); lbl.className = 'tree-section';
+    lbl.textContent = `${matches.length} result${matches.length !== 1 ? 's' : ''}`;
+    fileTree.appendChild(lbl);
+    matches.forEach(f => fileTree.appendChild(makeFileEl(f, 0, highlightMatch(f.displayName, q))));
+  } else {
+    if (!allEntries.length) {
+      fileTree.innerHTML = '<div class="tree-empty"><span class="material-symbols-rounded">folder_off</span>No markdown files found<br><button class="m3-btn m3-btn-text" data-action="new-file" style="margin-top:12px">Create a file</button></div>';
+      return;
+    }
+    renderTree(allEntries, fileTree, 0);
+  }
+  if (currentFilePath) {
+    fileTree.querySelectorAll('.tree-item[data-path]').forEach(el => {
+      if (el.dataset.path === currentFilePath) { el.classList.add('active'); activeEl = el; }
+    });
+  }
+}
+
+function highlightMatch(name, q) {
+  const i = name.toLowerCase().indexOf(q);
+  if (i === -1) return esc(name);
+  return esc(name.slice(0, i)) + '<span class="search-match">' + esc(name.slice(i, i + q.length)) + '</span>' + esc(name.slice(i + q.length));
+}
+
+function makeFileEl(entry, depth, labelHtml) {
+  const el = document.createElement('div');
+  el.className = 'tree-item'; el.dataset.path = entry.path; el.setAttribute('role', 'treeitem');
+  el.innerHTML = `${'<span class="tree-indent"></span>'.repeat(depth)}<span class="material-symbols-rounded" style="font-size:20px">description</span><span class="tree-label">${labelHtml || esc(entry.displayName)}</span>`;
+  el.addEventListener('click', () => openFile(entry, el));
+  el.addEventListener('contextmenu', e => showCtxMenu(e, entry));
+  return el;
+}
+
+function renderTree(entries, container, depth) {
+  for (const entry of entries) {
+    if (entry.kind === 'directory') {
+      const el = document.createElement('div');
+      el.className = 'tree-item tree-folder'; el.setAttribute('role', 'treeitem'); el.setAttribute('aria-expanded', 'false');
+      el.innerHTML = `${'<span class="tree-indent"></span>'.repeat(depth)}<span class="material-symbols-rounded" style="font-size:20px">folder</span><span class="tree-label">${esc(entry.name)}</span><span class="material-symbols-rounded tree-chevron">chevron_right</span>`;
+      const cc = document.createElement('div'); cc.style.display = 'none';
+      renderTree(entry.children, cc, depth + 1);
+      let open = false;
+      el.addEventListener('click', () => {
+        open = !open;
+        el.setAttribute('aria-expanded', open);
+        el.querySelector('.tree-chevron').textContent = open ? 'expand_more' : 'chevron_right';
+        el.querySelectorAll(':scope > .material-symbols-rounded')[0].textContent = open ? 'folder_open' : 'folder';
+        cc.style.display = open ? 'block' : 'none';
+      });
+      el.addEventListener('contextmenu', e => showCtxMenu(e, entry));
+      container.appendChild(el); container.appendChild(cc);
+    } else {
+      container.appendChild(makeFileEl(entry, depth));
+    }
+  }
+}
+
+// ═════════════════════════════════════════════════════════════════
+// OPEN / SAVE
+// ═════════════════════════════════════════════════════════════════
+async function openFile(entry, el) {
+  if (currentFileHandle && editor.value !== originalContent) {
+    const choice = await showConfirmDialog('Unsaved changes', `Save changes to "${currentFilePath}"?`, 'Discard', 'Save', 'warning');
+    if (choice === null) return;
+    if (choice === true) await saveFile();
+  }
+  if (activeEl) activeEl.classList.remove('active');
+  if (el) { el.classList.add('active'); activeEl = el; }
+  currentFileHandle = entry.handle; currentDirHandle = entry.dirHandle; currentFilePath = entry.path;
+  const file = await entry.handle.getFile(); const text = await file.text();
+  originalContent = text; editor.value = text;
+  preview.innerHTML = marked.parse(text);
+  emptyState.style.display = 'none'; unsavedDot.classList.remove('show');
+  $('topbar-path').textContent = entry.path;
+  $('preview-panel').scrollTop = 0;
+  localStorage.setItem('mk_lastFilePath', entry.path);
+  if (window.innerWidth <= 1024) closeMobileDrawer();
+}
+
+async function saveFile() {
+  if (!currentFileHandle) return;
+  try {
+    const w = await currentFileHandle.createWritable(); await w.write(editor.value); await w.close();
+    originalContent = editor.value; unsavedDot.classList.remove('show');
+    showSnackbar('File saved');
+  } catch (e) { showSnackbar('Could not save file'); }
+}
+
+// ═════════════════════════════════════════════════════════════════
+// EDITOR
+// ═════════════════════════════════════════════════════════════════
+let previewTimer;
+editor.addEventListener('input', () => {
+  unsavedDot.classList.toggle('show', editor.value !== originalContent);
+  clearTimeout(previewTimer);
+  previewTimer = setTimeout(() => { preview.innerHTML = marked.parse(editor.value); }, 150);
+});
+editor.addEventListener('keydown', e => {
+  if (e.key === 'Tab') { e.preventDefault(); editor.setRangeText('  ', editor.selectionStart, editor.selectionStart, 'end'); editor.dispatchEvent(new Event('input')); }
+});
+
+function fmt(action) {
+  const s = editor.selectionStart, e = editor.selectionEnd, sel = editor.value.substring(s, e);
+  let b = '', a = '', ins = '';
+  switch (action) {
+    case 'bold': b='**';a='**';ins=sel||'bold text';break;
+    case 'italic': b='_';a='_';ins=sel||'italic text';break;
+    case 'strike': b='~~';a='~~';ins=sel||'text';break;
+    case 'code': b='`';a='`';ins=sel||'code';break;
+    case 'codeblock': b='```\n';a='\n```';ins=sel||'code';break;
+    case 'link': b='[';a='](url)';ins=sel||'link text';break;
+    case 'h1': b='# ';ins=sel||'Heading';break;
+    case 'h2': b='## ';ins=sel||'Heading';break;
+    case 'h3': b='### ';ins=sel||'Heading';break;
+    case 'ul': b='- ';ins=sel||'item';break;
+    case 'ol': b='1. ';ins=sel||'item';break;
+    case 'quote': b='> ';ins=sel||'quote';break;
+    case 'hr': b='\n---\n';ins='';break;
+    default: return;
+  }
+  editor.setRangeText(b+ins+(a||''),s,e,'select');
+  editor.setSelectionRange(s+b.length,s+b.length+ins.length);
+  editor.focus(); editor.dispatchEvent(new Event('input'));
+}
+document.querySelectorAll('[data-fmt]').forEach(btn => btn.addEventListener('click', () => fmt(btn.dataset.fmt)));
+
+// ═════════════════════════════════════════════════════════════════
+// DIALOGS
+// ═════════════════════════════════════════════════════════════════
+let dialogResolve = null;
+function showDialog(title, icon, label, hint, confirmLabel, defaultValue) {
+  return new Promise(resolve => {
+    dialogResolve = resolve;
+    $('dialog-title').textContent = title;
+    $('dialog-icon').querySelector('.material-symbols-rounded').textContent = icon;
+    $('dialog-label').textContent = label; $('dialog-hint').textContent = hint || '';
+    $('dialog-confirm').textContent = confirmLabel || 'Create';
+    $('dialog-input').value = defaultValue || '';
+    $('dialog-scrim').classList.add('show');
+    setTimeout(() => { $('dialog-input').focus(); $('dialog-input').select(); }, 80);
+  });
+}
+function closeDialog(val) { $('dialog-scrim').classList.remove('show'); if (dialogResolve) { dialogResolve(val); dialogResolve = null; } }
+$('dialog-cancel').addEventListener('click', () => closeDialog(null));
+$('dialog-confirm').addEventListener('click', () => closeDialog($('dialog-input').value.trim()));
+$('dialog-input').addEventListener('keydown', e => { if (e.key === 'Enter') closeDialog($('dialog-input').value.trim()); if (e.key === 'Escape') closeDialog(null); });
+$('dialog-scrim').addEventListener('click', e => { if (e.target === $('dialog-scrim')) closeDialog(null); });
+
+let confirmResolve = null;
+function showConfirmDialog(title, body, falseLabel, trueLabel, icon) {
+  return new Promise(resolve => {
+    confirmResolve = resolve;
+    $('confirm-title').textContent = title; $('confirm-body').textContent = body;
+    $('confirm-icon').querySelector('.material-symbols-rounded').textContent = icon || 'delete';
+    $('confirm-cancel').textContent = falseLabel || 'Cancel';
+    $('confirm-ok').textContent = trueLabel || 'Delete';
+    $('confirm-ok').className = trueLabel === 'Save' ? 'm3-btn m3-btn-tonal' : 'm3-btn m3-btn-filled error';
+    $('confirm-scrim').classList.add('show');
+  });
+}
+function closeConfirm(val) { $('confirm-scrim').classList.remove('show'); if (confirmResolve) { confirmResolve(val); confirmResolve = null; } }
+$('confirm-cancel').addEventListener('click', () => closeConfirm(false));
+$('confirm-ok').addEventListener('click', () => closeConfirm(true));
+$('confirm-scrim').addEventListener('click', e => { if (e.target === $('confirm-scrim')) closeConfirm(null); });
+
+// Help dialog
+function showHelp() { $('help-scrim').classList.add('show'); }
+function closeHelp() { $('help-scrim').classList.remove('show'); }
+$('help-btn').addEventListener('click', showHelp);
+$('help-close').addEventListener('click', closeHelp);
+$('help-scrim').addEventListener('click', e => { if (e.target === $('help-scrim')) closeHelp(); });
+
+// ═════════════════════════════════════════════════════════════════
+// FILE OPERATIONS
+// ═════════════════════════════════════════════════════════════════
+async function createNewFile(parentDir) {
+  const target = parentDir || dirHandle; if (!target) return;
+  const name = await showDialog('New file', 'note_add', 'File name', '.md added automatically', 'Create', '');
+  if (!name) return;
+  const fn = /\.(md|markdown|mdown|mkd|mdx)$/i.test(name) ? name : name + '.md';
+  try {
+    const fh = await target.getFileHandle(fn, { create: true });
+    const w = await fh.createWritable(); await w.write(''); await w.close();
+    showSnackbar('File created'); await loadFolder();
+    currentFileHandle = fh; currentDirHandle = target; currentFilePath = fn;
+    originalContent = ''; editor.value = ''; preview.innerHTML = '';
+    emptyState.style.display = 'none'; unsavedDot.classList.remove('show');
+    $('topbar-path').textContent = fn;
+    localStorage.setItem('mk_lastFilePath', fn);
+    if (viewMode === 'preview') setView('split');
+    editor.focus();
+  } catch (e) { showSnackbar('Could not create file'); }
+}
+
+async function createNewFolder(parentDir) {
+  const target = parentDir || dirHandle; if (!target) return;
+  const name = await showDialog('New folder', 'create_new_folder', 'Folder name', '', 'Create', '');
+  if (!name) return;
+  try { await target.getDirectoryHandle(name, { create: true }); showSnackbar('Folder created'); await loadFolder(); }
+  catch (e) { showSnackbar('Could not create folder'); }
+}
+
+async function renameEntry(entry) {
+  const isDir = entry.kind === 'directory';
+  const name = await showDialog(isDir ? 'Rename folder' : 'Rename file', 'edit', isDir ? 'Folder name' : 'File name', isDir ? '' : '.md added automatically', 'Rename', isDir ? entry.name : entry.displayName);
+  if (!name || name === entry.name || name === entry.displayName) return;
+  const target = isDir ? entry.parentHandle : entry.dirHandle; if (!target) return;
+  try {
+    if (!isDir) {
+      const finalName = /\.(md|markdown|mdown|mkd|mdx)$/i.test(name) ? name : name + '.md';
+      const file = await entry.handle.getFile(); const text = await file.text();
+      const fh = await target.getFileHandle(finalName, { create: true });
+      const w = await fh.createWritable(); await w.write(text); await w.close();
+      await target.removeEntry(entry.name);
+      if (currentFileHandle === entry.handle) {
+        currentFileHandle = fh; currentFilePath = finalName;
+        $('topbar-path').textContent = finalName; localStorage.setItem('mk_lastFilePath', finalName);
+      }
+    }
+    showSnackbar('Renamed'); await loadFolder();
+  } catch (e) { showSnackbar('Could not rename'); }
+}
+
+async function deleteEntry(entry) {
+  const isDir = entry.kind === 'directory';
+  const ok = await showConfirmDialog(`Delete ${isDir?'folder':'file'}?`, `"${entry.name}" will be permanently removed.`, 'Cancel', 'Delete', 'delete');
+  if (!ok) return;
+  const target = isDir ? entry.parentHandle : entry.dirHandle; if (!target) return;
+  try {
+    await target.removeEntry(entry.name, { recursive: isDir });
+    if (currentFileHandle === entry.handle) {
+      currentFileHandle = null; currentFilePath = '';
+      editor.value = ''; preview.innerHTML = ''; emptyState.style.display = 'flex';
+      $('topbar-path').textContent = ''; unsavedDot.classList.remove('show');
+      localStorage.removeItem('mk_lastFilePath');
+    }
+    showSnackbar('Deleted'); await loadFolder();
+  } catch (e) { showSnackbar('Could not delete'); }
+}
+
+// ═════════════════════════════════════════════════════════════════
+// CONTEXT / OVERFLOW MENUS
+// ═════════════════════════════════════════════════════════════════
+const ctxMenu = $('ctx-menu'), overflowMenu = $('overflow-menu');
+
+function showCtxMenu(e, entry) {
+  e.preventDefault(); e.stopPropagation(); ctxMenu.innerHTML = '';
+  if (entry.kind === 'directory') {
+    addCtx('note_add', 'New File Here', () => createNewFile(entry.handle));
+    addCtx('create_new_folder', 'New Folder Here', () => createNewFolder(entry.handle));
+    ctxMenu.appendChild(Object.assign(document.createElement('div'), { className: 'menu-sep' }));
+    addCtx('edit', 'Rename', () => renameEntry(entry));
+    addCtx('delete', 'Delete', () => deleteEntry(entry), true);
+  } else {
+    addCtx('edit', 'Rename', () => renameEntry(entry));
+    addCtx('delete', 'Delete', () => deleteEntry(entry), true);
+  }
+  ctxMenu.classList.add('show');
+  // Position clamped to viewport
+  const r = ctxMenu.getBoundingClientRect();
+  let x = e.clientX, y = e.clientY;
+  if (x + r.width > window.innerWidth - 8) x = window.innerWidth - r.width - 8;
+  if (y + r.height > window.innerHeight - 8) y = window.innerHeight - r.height - 8;
+  if (x < 8) x = 8; if (y < 8) y = 8;
+  ctxMenu.style.left = x + 'px'; ctxMenu.style.top = y + 'px';
+}
+function addCtx(icon, label, fn, danger) {
+  const el = document.createElement('div');
+  el.className = 'menu-item' + (danger ? ' danger' : '');
+  el.innerHTML = `<span class="material-symbols-rounded">${icon}</span>${label}`;
+  el.addEventListener('click', () => { closeAllMenus(); fn(); });
+  ctxMenu.appendChild(el);
+}
+
+$('more-btn').addEventListener('click', e => {
+  e.stopPropagation();
+  if (overflowMenu.classList.contains('show')) { overflowMenu.classList.remove('show'); return; }
+  closeAllMenus();
+  // Position: anchor to right edge of more-btn
+  const rect = $('more-btn').getBoundingClientRect();
+  overflowMenu.style.top = (rect.bottom + 8) + 'px';
+  overflowMenu.style.left = 'auto';
+  overflowMenu.style.right = Math.max(8, window.innerWidth - rect.right) + 'px';
+  overflowMenu.classList.add('show');
+});
+
+function closeAllMenus() { ctxMenu.classList.remove('show'); overflowMenu.classList.remove('show'); }
+document.addEventListener('click', closeAllMenus);
+
+// ═════════════════════════════════════════════════════════════════
+// ACTION DISPATCH
+// ═════════════════════════════════════════════════════════════════
+function dispatch(action) {
+  switch (action) {
+    case 'open-folder': pickFolder(); break;
+    case 'new-file': createNewFile(); break;
+    case 'new-folder': createNewFolder(); break;
+    case 'save': saveFile(); break;
+    case 'refresh': loadFolder(); break;
+    case 'toggle-sidebar': toggleSidebar(); break;
+    case 'show-help': showHelp(); break;
+  }
+}
+document.addEventListener('click', e => { const el = e.target.closest('[data-action]'); if (el) dispatch(el.dataset.action); });
+$('fab').addEventListener('click', () => createNewFile());
+
+// ═════════════════════════════════════════════════════════════════
+// SEARCH
+// ═════════════════════════════════════════════════════════════════
+searchInput.addEventListener('input', renderFiltered);
+$('search-clear').addEventListener('click', () => { searchInput.value = ''; renderFiltered(); searchInput.focus(); });
+$('recursive-toggle').addEventListener('change', function() { $('recursive-toggle-app').checked = this.checked; });
+$('recursive-toggle-app').addEventListener('change', function() {
+  $('recursive-toggle').checked = this.checked;
+  localStorage.setItem('mk_recursive', this.checked);
+  if (dirHandle) loadFolder();
+});
+
+// ═════════════════════════════════════════════════════════════════
+// KEYBOARD SHORTCUTS
+// ═════════════════════════════════════════════════════════════════
+document.addEventListener('keydown', e => {
+  const mod = e.metaKey || e.ctrlKey;
+
+  // Close all overlays on Escape
+  if (e.key === 'Escape') {
+    closeDialog(null); closeConfirm(null); closeHelp(); closeAllMenus();
+    if (window.innerWidth <= 1024) closeMobileDrawer();
+    return;
+  }
+  // Help
+  if (e.key === '?' && !mod && document.activeElement !== editor && document.activeElement !== $('dialog-input')) { e.preventDefault(); showHelp(); return; }
+
+  if (!mod) return;
+
+  // General
+  if (e.key === 'o') { e.preventDefault(); pickFolder(); }
+  else if (e.key === 's') { e.preventDefault(); saveFile(); }
+  else if (e.key === 'n' && !e.shiftKey) { e.preventDefault(); createNewFile(); }
+  else if (e.key === 'n' && e.shiftKey) { e.preventDefault(); createNewFolder(); }
+  else if (e.key === '\\') { e.preventDefault(); toggleSidebar(); }
+  // View
+  else if (e.key === '1' && !e.shiftKey) { e.preventDefault(); setView('editor'); }
+  else if (e.key === '2' && !e.shiftKey) { e.preventDefault(); setView('split'); }
+  else if (e.key === '3' && !e.shiftKey) { e.preventDefault(); setView('preview'); }
+  // Format (headings)
+  else if (e.key === '1' && e.shiftKey) { e.preventDefault(); fmt('h1'); }
+  else if (e.key === '2' && e.shiftKey) { e.preventDefault(); fmt('h2'); }
+  else if (e.key === '3' && e.shiftKey) { e.preventDefault(); fmt('h3'); }
+  // Format
+  else if (e.key === 'b') { e.preventDefault(); fmt('bold'); }
+  else if (e.key === 'i') { e.preventDefault(); fmt('italic'); }
+  else if (e.key === 'k') {
+    e.preventDefault();
+    if (document.activeElement === editor) fmt('link');
+    else { searchInput.focus(); searchInput.select(); }
+  }
+});
+
+// ═════════════════════════════════════════════════════════════════
+// SNACKBAR
+// ═════════════════════════════════════════════════════════════════
+let snackTimer;
+function showSnackbar(msg) {
+  $('snackbar-msg').textContent = msg; $('snackbar').classList.add('show');
+  clearTimeout(snackTimer); snackTimer = setTimeout(() => $('snackbar').classList.remove('show'), 3000);
+}
+
+// ═════════════════════════════════════════════════════════════════
+// INDEXEDDB PERSISTENCE
+// ═════════════════════════════════════════════════════════════════
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open('simple-mk-web-db', 1);
+    req.onupgradeneeded = () => req.result.createObjectStore('handles');
+    req.onsuccess = () => resolve(req.result); req.onerror = () => reject(req.error);
+  });
+}
+async function storeHandle(h) { try { const db = await openDB(); const tx = db.transaction('handles','readwrite'); tx.objectStore('handles').put(h,'rootDir'); await new Promise(r=>{tx.oncomplete=r}); } catch(e){} }
+async function getStoredHandle() { try { const db = await openDB(); const tx = db.transaction('handles','readonly'); const req = tx.objectStore('handles').get('rootDir'); return new Promise(r=>{req.onsuccess=()=>r(req.result);req.onerror=()=>r(null)}); } catch(e){return null} }
+
+// ═════════════════════════════════════════════════════════════════
+// RESPONSIVE
+// ═════════════════════════════════════════════════════════════════
+window.addEventListener('resize', () => {
+  const w = window.innerWidth;
+  if (w > 1024) { closeMobileDrawer(); if (!sidebarOpen) sidebar.classList.add('hidden'); }
+  if (w <= 640 && viewMode === 'split') setView('preview');
+});
+
+// ═════════════════════════════════════════════════════════════════
+// INIT
+// ═════════════════════════════════════════════════════════════════
+(async function init() {
+  const st = localStorage.getItem('mk_theme') || (matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light');
+  setTheme(st);
+  viewMode = localStorage.getItem('mk_viewMode') || 'preview';
+  const sr = localStorage.getItem('mk_recursive');
+  if (sr !== null) { const v = sr === 'true'; $('recursive-toggle').checked = v; $('recursive-toggle-app').checked = v; }
+  const ss = localStorage.getItem('mk_sidebarOpen');
+  if (ss !== null) sidebarOpen = ss !== 'false';
+
+  const stored = await getStoredHandle();
+  if (stored) {
+    try {
+      if (await stored.requestPermission({ mode: 'readwrite' }) === 'granted') {
+        dirHandle = stored; await activateApp();
+        const lp = localStorage.getItem('mk_lastFilePath');
+        if (lp) { const m = flattenFiles(allEntries).find(f => f.path === lp); if (m) { const el = fileTree.querySelector(`[data-path="${CSS.escape(lp)}"]`); await openFile(m, el); } }
+        return;
+      }
+    } catch (e) {}
+  }
+  $('landing').style.display = 'flex';
+})();
+
+function esc(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+</script>
+</body>
+</html>
