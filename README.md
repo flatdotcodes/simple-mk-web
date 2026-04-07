@@ -1,8 +1,4 @@
-<p align="center">
-  <img src="favicon.svg" width="72" height="72" alt="simple-mk-web">
-</p>
-
-# simple-mk-web
+# <img src="favicon.svg" width="32" height="32" alt=""> simple-mk-web
 
 A single-file markdown viewer and editor that runs entirely in your browser. Select a local folder, browse your `.md` files, and preview or edit them — nothing is uploaded anywhere.
 
@@ -19,6 +15,10 @@ Feel free to report a bug, suggest a change, or submit a pull request. All are w
 | Editor | Dark Mode |
 |--------|-----------|
 | ![Editor](screenshots/editor.png) | ![Dark Mode](screenshots/dark-mode.png) |
+
+| Mobile Preview | Mobile Sidebar | Mobile Editor |
+|----------------|----------------|---------------|
+| <img src="screenshots/mobile-preview.png" width="250"> | <img src="screenshots/mobile-sidebar.png" width="250"> | <img src="screenshots/mobile-editor.png" width="250"> |
 
 ## Features
 
