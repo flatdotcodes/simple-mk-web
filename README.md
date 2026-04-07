@@ -2,6 +2,10 @@
 
 A single-file markdown viewer and editor that runs entirely in your browser. Select a local folder, browse your `.md` files, and preview or edit them — nothing is uploaded anywhere.
 
+This was made as a simple solution to a simple problem I personally had. Entirely generated with Claude Opus 4.6 in Claude Code (I only provided spec for design and basic functionality).
+
+Feel free to report a bug, suggest a change, or submit a pull request. All are welcome.
+
 ## Features
 
 - **Folder browsing** — pick any local directory using the File System Access API
@@ -19,7 +23,7 @@ A single-file markdown viewer and editor that runs entirely in your browser. Sel
 
 Open `index.html` in a browser, or visit the hosted version:
 
-**https://your-username.github.io/simple-mk-web**
+**https://flatdotcodes.github.io/simple-mk-web**
 
 Click "Open Folder" and select a directory containing markdown files. Your files never leave your device.
 
@@ -41,17 +45,6 @@ Click "Open Folder" and select a directory containing markdown files. Your files
 ## Requirements
 
 - A modern browser with [File System Access API](https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API) support (Chrome, Edge, Opera)
-- No build step, no dependencies to install — it's one HTML file
-
-## Development
-
-To run locally:
-
-```bash
-python3 -m http.server 3456
-```
-
-Then open http://localhost:3456.
 
 ## License
 
